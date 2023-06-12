@@ -6,7 +6,7 @@ import Products from "./components/Shop/Products";
 
 function App() {
   
-  const open = useSelector ((state) => state.isOpen);
+  const open = useSelector ((state) => state.cartOpen.isOpen);
 console.log(open)
   return (
     <Layout>
