@@ -21,53 +21,76 @@ const cartItemSlice = createSlice({
   initialState: cartItemState,
   reducers: {
     addItemToCart(state, action) {
-      const exisistingIndex = state.itemArray.findIndex(
+      console.log(action.payload.token);
+      const existingIndex = state.itemArray.findIndex(
         (currentItem) => currentItem.id === action.payload.id
       );
-      const exisistingItem = state.itemArray[exisistingIndex];
-      console.log(exisistingItem);
+      const existingItem = state.itemArray[existingIndex];
 
-      if (exisistingItem) {
-        const updateItem = {
-          ...exisistingItem,
-          quantity: exisistingItem.quantity + 1,
+      if (existingItem) {
+        const updatedItem = {
+          ...existingItem,
+          quantity: existingItem.quantity + 1,
         };
-        const updateItems = [...state.itemArray];
-        updateItems[exisistingIndex] = updateItem;
+        const updatedItems = [...state.itemArray];
+        updatedItems[existingIndex] = updatedItem;
 
-        state.itemArray = updateItems;
+        state.itemArray = updatedItems;
       } else {
         state.itemArray = [...state.itemArray, action.payload];
       }
     },
-    removeItemfromCart(state, action) {
-      const exisistingIndex = state.itemArray.findIndex(
+    removeItemFromCart(state, action) {
+      const existingIndex = state.itemArray.findIndex(
         (currentItem) => currentItem.id === action.payload.id
       );
-      const exisistingItem = state.itemArray[exisistingIndex];
-      console.log(exisistingItem);
+      const existingItem = state.itemArray[existingIndex];
+      console.log(existingItem);
 
-      if (exisistingItem.quantity >1) {
-        const updateItem = {
-          ...exisistingItem,
-          quantity: exisistingItem.quantity - 1,
+      if (existingItem.quantity > 1) {
+        const updatedItem = {
+          ...existingItem,
+          quantity: existingItem.quantity - 1,
         };
-        const updateItems = [...state.itemArray];
-        updateItems[exisistingIndex] = updateItem;
+        const updatedItems = [...state.itemArray];
+        updatedItems[existingIndex] = updatedItem;
 
-        state.itemArray = updateItems;
-      } else  {
+        state.itemArray = updatedItems;
+      } else {
         const removedItemArray = state.itemArray.filter((current) => {
-          current.id !== action.payload.id;
+        return  current.id !== action.payload.id;
         });
-        state.itemArray = removedItemArray
+        state.itemArray = removedItemArray;
       }
     },
   },
 });
-const reducerStore = configureStore({
-  reducer: { cartOpen: cartOpenSlice.reducer, cartItem: cartItemSlice.reducer },
+
+
+
+const uiSlice = createSlice({
+  name: "Ui",
+  initialState: {notification: null},
+  reducers: {
+    showNotification(state, action) {
+      state.notification = {
+        status: action.payload.status,
+        title: action.payload.title,
+        message: action.payload.message,
+      };
+    },
+  },
 });
+
+const reducerStore = configureStore({
+  reducer: {
+    cartOpen: cartOpenSlice.reducer,
+    cartItem: cartItemSlice.reducer,
+    ui: uiSlice.reducer,
+  },
+});
+
+export const uiActions = uiSlice.actions;
 export const cartActions = cartOpenSlice.actions;
 export const cartItemActions = cartItemSlice.actions;
 export default reducerStore;
